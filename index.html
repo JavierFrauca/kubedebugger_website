@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kubedebugger — Depura tus microservicios de Kubernetes en tu propia máquina</title>
+  <meta name="description" content="kubedebugger intercepta el tráfico real de un servicio de Kubernetes, escala su deployment a cero y lo redirige a tu 127.0.0.1: depura con breakpoints en tu IDE contra datos reales del entorno. 100% gratuito, licencia MIT.">
+  <meta property="og:title" content="kubedebugger — Depura microservicios de Kubernetes en local">
+  <meta property="og:description" content="Tráfico real del clúster en tu localhost. Breakpoints en tu IDE. Cero cambios en tus imágenes. Gratuito, licencia MIT.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kubedebugger.es/">
+  <link rel="canonical" href="https://kubedebugger.es/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 L28 9 V23 L16 30 L4 23 V9 Z' stroke='%232dd4bf' stroke-width='2' fill='%230b1120'/%3E%3Ctext x='8' y='21' font-family='monospace' font-size='11' fill='%232dd4bf' font-weight='bold'%3E%3E_%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="nav">
+    <a class="brand" href="index.html" aria-label="kubedebugger — inicio">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path d="M16 2 L28 9 V23 L16 30 L4 23 V9 Z" stroke="#2dd4bf" stroke-width="2" fill="rgba(45,212,191,.08)"/>
+        <text x="8" y="21" font-family="Consolas, monospace" font-size="11" fill="#2dd4bf" font-weight="bold">&gt;_</text>
+      </svg>
+      <span class="name mono"><b>kube</b>debugger</span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Abrir menú">☰ Menú</button>
+    <nav class="links" aria-label="Principal">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#ventajas">Ventajas</a>
+      <a href="#instalacion">Instalación</a>
+      <a href="#faq">FAQ</a>
+      <a href="acerca-de.html">Acerca de</a>
+      <a href="contacto.html">Contacto</a>
+      <a class="cta" href="#descarga">Descargar</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <span class="kicker">v0.1.0 · 100% gratuito · licencia MIT</span>
+    <h1>Depura tus microservicios de <em>Kubernetes</em> en tu propia máquina</h1>
+    <p class="lead">
+      kubedebugger intercepta el <b>tráfico real</b> de un servicio del clúster, escala su
+      deployment a cero y lo redirige a tu <b>127.0.0.1</b>. Tu código, tu IDE, tus
+      breakpoints, los datos del entorno. Al desconectar, el clúster se restaura solo.
+    </p>
+    <div class="actions">
+      <a class="btn primary" href="#descarga">⬇ Descargar kubedebugger</a>
+      <a class="btn ghost" href="#como-funciona">Ver cómo funciona</a>
+    </div>
+    <div class="badges">
+      <span class="badge"><b>Sin agentes</b> en tus imágenes</span>
+      <span class="badge"><b>Funciona</b> en clústeres privados</span>
+      <span class="badge"><b>RBAC</b> corporativo friendly</span>
+      <span class="badge"><b>Windows</b> · Linux · macOS</span>
+      <span class="badge"><b>Cero</b> telemetría</span>
+    </div>
+
+    <div class="terminal" role="img" aria-label="Ejemplo de sesión de kubedebugger en la terminal">
+      <div class="bar"><i></i><i></i><i></i><span>bash — mi-proyecto</span></div>
+      <pre><span class="t-comment"># conectas, listas e interceptas: tres comandos</span>
+<span class="t-prompt">$</span> <span class="t-cmd">kdb connect</span>
+<span class="t-out">✓ contexto aks-prod-eu · namespace <b>tienda</b></span>
+<span class="t-prompt">$</span> <span class="t-cmd">kdb list</span>
+<span class="t-out">store-front     ClusterIP  interceptable
+orders          ClusterIP  interceptable</span>
+<span class="t-prompt">$</span> <span class="t-cmd">kdb intercept orders</span> <span class="t-flag">--port</span> 8080 <span class="t-flag">--env-file</span> .env
+<span class="t-ok">✓ deployment escalado a 0 · fake-proxy desplegado · túnel activo</span>
+<span class="t-ok">✓ tráfico del clúster → 127.0.0.1:8080  (Ctrl+C para restaurar)</span>
+<span class="t-comment"># en otra terminal: F5 en tu IDE con breakpoints.</span>
+<span class="t-comment"># Las peticiones REALES del entorno llegan a tu proceso local.</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUÉ ES ============ -->
+<section id="que-es">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">El problema</span>
+      <h2>Depurar en Kubernetes no debería ser un ritual</h2>
+      <p>
+        Si desarrollas contra un clúster, conoces la coreografía: reconstruir la imagen con
+        herramientas de depuración, esperar el pipeline, mirar logs a ciegas, repetir.
+        Y para ver un breakpoint, o montas un entorno paralelo medio roto o contaminas
+        el clúster con tooling que no quieres en producción.
+      </p>
+      <p>
+        kubedebugger rompe eso: el servicio <b>sigue desplegado donde debe</b>, pero su
+        tráfico —el real, con sus cabeceras, sus tokens y sus productores de eventos—
+        viaja a tu proceso local mientras depuras. Ni entornos espejo, ni imágenes
+        especiales, ni cambios en tus manifiestos.
+      </p>
+    </div>
+
+    <div class="flow" aria-label="Flujo del tráfico con kubedebugger">
+      <div class="node"><b>Tráfico del clúster</b><span>otros pods y servicios</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Service</b><span>sin cambios en tu YAML</span></div>
+      <div class="arrow">→</div>
+      <div class="node hot"><b>fake-proxy</b><span>pod sustituto ligero</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><b>túnel autenticado</b><span>port-forward vía API server</span></div>
+      <div class="arrow">→</div>
+      <div class="node hot"><b>127.0.0.1:8080</b><span>tu proceso con el debugger</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CÓMO FUNCIONA ============ -->
+<section id="como-funciona" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">Arquitectura</span>
+      <h2>Cómo funciona, sin humo</h2>
+      <p>Tres piezas en total. Dos viven en el clúster y una en tu máquina.</p>
+    </div>
+
+    <table class="tbl">
+      <thead>
+        <tr><th>Componente</th><th>Dónde vive</th><th>Qué hace</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>CLI <code>kdb</code></b></td>
+          <td>Tu máquina</td>
+          <td>Conectar, listar, interceptar, restaurar. Toda la lógica está aquí; el resto son ejecutores. Incluye interfaz interactiva (<code>kdb tui</code>).</td>
+        </tr>
+        <tr>
+          <td><b>Manager</b></td>
+          <td>Clúster (namespace central o el del equipo)</td>
+          <td>API de sesiones, relay del túnel y <b>watchdog</b> de recuperación. Ejecuta todas las mutaciones con su propia ServiceAccount.</td>
+        </tr>
+        <tr>
+          <td><b>Fake-proxy</b></td>
+          <td>Clúster (pod ligero por sesión)</td>
+          <td>Sustituye al workload: recibe el tráfico del Service y lo tunela a tu máquina, o sirve respuestas simuladas si usas mocks.</td>
+        </tr>
+        <tr>
+          <td><b>Extensión VS Code</b> <em>(opcional)</em></td>
+          <td>Tu editor</td>
+          <td>Una sola vista: conexión, intercepts activos, servicios interceptables y sesiones ajenas. Ejecuta <code>kdb</code> por debajo; todo lo que hace la UI se puede hacer en terminal.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Anatomía de un intercept</h3>
+    <ol class="steps">
+      <li><b>Snapshot.</b> <code>kdb</code> guarda el estado original del deployment (réplicas, selector, imagen).</li>
+      <li><b>Escala a cero.</b> El workload original deja de correr: no hay doble procesamiento de mensajes ni escrituras duplicadas.</li>
+      <li><b>Fake-proxy.</b> Se despliega un pod mínimo y el Service se redirige a él. Para el resto del clúster, el servicio «sigue ahí».</li>
+      <li><b>Túnel.</b> El fake-proxy envía el tráfico hacia tu máquina por un port-forward autenticado con token a través del API server. <b>Nada se expone</b>: ni LoadBalancer, ni Ingress, ni NodePort.</li>
+      <li><b>Depuras.</b> Las peticiones llegan a tu <code>127.0.0.1:puerto</code>. Con <code>--env-file</code>, tu proceso local arranca con las variables del pod (connection strings incluidas): tu local consume y publica en los brokers y bases de datos <b>reales</b> del entorno.</li>
+      <li><b>Restauración.</b> Con <code>detach</code> (o Ctrl+C) todo vuelve a su estado exacto. Si tu portátil muere sin desconectar, el <b>watchdog</b> del manager restaura el clúster tras un periodo de gracia (<code>--daemon-grace</code>, 2&nbsp;min por defecto).</li>
+    </ol>
+
+    <div class="note">
+      <b>Nota para administradores:</b> el desarrollador <b>nunca gana permisos de mutación</b>.
+      Con el modo restringido, su perfil solo necesita <code>pods get/list</code> y
+      <code>pods/portforward create</code>; todas las escrituras las hace el manager con su
+      ServiceAccount, auditable como cualquier cuenta de servicio del clúster.
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODOS ============ -->
+<section id="modos">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">Tres modos</span>
+      <h2>Elige cuánto tráfico quieres ver</h2>
+      <p>Y comparte el mismo servicio con el resto del equipo sin pisarse.</p>
+    </div>
+
+    <div class="grid c3">
+      <div class="card">
+        <span class="icon">🔀</span>
+        <h3>forward</h3>
+        <p>Todo el tráfico del servicio llega a tu máquina. Ideal para reproducir un bug concreto con carga real o seguir una petición end-to-end con breakpoints.</p>
+        <pre class="code">kdb intercept orders \
+  --port 8080</pre>
+      </div>
+      <div class="card">
+        <span class="icon">🧪</span>
+        <h3>mock</h3>
+        <p>El fake-proxy responde con respuestas que tú defines en YAML: estados, cuerpos, latencias, porcentaje de errores. Sin levantar siquiera el servicio en local.</p>
+        <pre class="code">kdb intercept orders \
+  --mode mock \
+  --mocks mocks.yaml</pre>
+      </div>
+      <div class="card">
+        <span class="icon">🪄</span>
+        <h3>híbrido</h3>
+        <p>Filtra por cabecera o ruta: lo que te interesa va a tu máquina, el resto lo atienden los mocks. Varios desarrolladores pueden interceptar el mismo servicio con filtros distintos.</p>
+        <pre class="code">kdb intercept orders \
+  --mode hybrid \
+  --http-header x-debug=tu-usuario \
+  --mocks mocks.yaml</pre>
+      </div>
+    </div>
+
+    <pre class="code"><span class="c"># mocks.yaml — el fake responde por ti</span>
+<span class="k">routes</span>:
+  - <span class="k">path</span>: <span class="s">/api/orders</span>
+    <span class="k">method</span>: <span class="s">GET</span>
+    <span class="k">status</span>: <span class="a">200</span>
+    <span class="k">body</span>: <span class="s">{"orders": [], "degraded": true}</span>
+    <span class="k">latencyMs</span>: <span class="a">120</span>
+  - <span class="k">path</span>: <span class="s">/api/orders</span>
+    <span class="k">method</span>: <span class="s">POST</span>
+    <span class="k">status</span>: <span class="a">503</span>          <span class="c"># prueba cómo reacciona tu cliente a un error</span>
+    <span class="k">errorRate</span>: <span class="a">0.3</span></pre>
+  </div>
+</section>
+
+<!-- ============ INSTALACIÓN ============ -->
+<section id="instalacion" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">Puesta en marcha</span>
+      <h2>Instalación en dos roles</h2>
+      <p>El administrador instala una vez por clúster; los desarrolladores no instalan nada en el clúster, solo el binario en su máquina.</p>
+    </div>
+
+    <div class="tabs">
+      <div class="tab-btns" role="tablist">
+        <button class="active" type="button">Administrador (una vez)</button>
+        <button type="button">Desarrollador</button>
+      </div>
+
+      <div class="tab-pane active">
+        <p>Manager central en <code>kubedebugger-system</code> + acceso para el grupo de Entra ID:</p>
+        <pre class="code"><span class="t-prompt">$</span> <span class="t-cmd">kdb install</span>
+<span class="t-ok">✓ namespace kubedebugger-system · deployment manager · secret de sesión · RBAC</span>
+<span class="t-prompt">$</span> <span class="t-cmd">kdb grant-devs</span> <span class="t-flag">--group</span> &lt;objectId-del-grupo-Entra&gt;
+<span class="t-ok">✓ el grupo de devs ya puede usar kdb en todos los namespaces</span></pre>
+        <p>
+          Entra un desarrollador nuevo al grupo y ya puede trabajar, sin ejecutar nada ni
+          dar altas por persona. ¿Prefieres aislamiento por equipo? <code>kdb install
+          --namespace &lt;ns&gt;</code> despliega un manager namespaced con RBAC limitado a ese
+          namespace. ¿Un namespace delicado? <code>kubectl label ns &lt;ns&gt;
+          kubedebugger.io/allow-intercept=false</code> y queda blindado.
+        </p>
+      </div>
+
+      <div class="tab-pane">
+        <p>Descarga el paquete, instala y conecta. Sin permisos de administrador, sin tocar el clúster por tu cuenta:</p>
+        <pre class="code"><span class="t-comment"># Windows: descomprime y ejecuta install.ps1 (copia kdb al PATH e instala la extensión)</span>
+<span class="t-comment"># Linux/macOS: descomprime el tar.gz y mueve ./kdb a tu PATH</span>
+
+<span class="t-prompt">$</span> <span class="t-cmd">kdb connect</span>
+<span class="t-ok">✓ contexto y namespace fijados (se recuerdan entre sesiones)</span>
+<span class="t-prompt">$</span> <span class="t-cmd">kdb use-namespace</span> tienda
+<span class="t-prompt">$</span> <span class="t-cmd">kdb intercept</span> store-front <span class="t-flag">--port</span> 8080 <span class="t-flag">--env-file</span> .env
+<span class="t-ok">✓ tráfico real → 127.0.0.1:8080</span></pre>
+        <p>
+          En clústeres corporativos con permisos restringidos, <code>kdb</code> detecta el 403
+          y opera automáticamente a través del manager. Si tu equipo no usa la terminal,
+          la extensión de VS Code y <code>kdb tui</code> cubren el mismo flujo con interfaz gráfica.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VENTAJAS ============ -->
+<section id="ventajas">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">Por qué kubedebugger</span>
+      <h2>Diseñado por y para gente que opera clústeres</h2>
+    </div>
+
+    <div class="grid c4">
+      <div class="card"><span class="icon">🎯</span><h3>Breakpoints, no prints</h3><p>Depura con tu IDE de siempre: breakpoints, inspección de variables, paso a paso. Contra el tráfico real del entorno.</p></div>
+      <div class="card"><span class="icon">📦</span><h3>Cero cambios en tus imágenes</h3><p>Ni sidecars ni agentes de depuración en tus Dockerfiles. Tus manifiestos y tu pipeline quedan intactos.</p></div>
+      <div class="card"><span class="icon">🔌</span><h3>Entornos reales, sin duplicar</h3><p>Tu proceso local consume los brokers y bases de datos del entorno con las variables del pod. Sin réplicas fantasma duplicando eventos.</p></div>
+      <div class="card"><span class="icon">🏢</span><h3>Pensado para clústeres corporativos</h3><p>Modo restringido para perfiles mínimos (solo pods + port-forward), alta vía grupo de Entra ID y fallback automático al manager ante un 403.</p></div>
+      <div class="card"><span class="icon">🛟</span><h3>Autocuración</h3><p>Snapshot del estado original, restauración exacta al desconectar y watchdog que levanta el clúster si tu máquina desaparece sin despedirse.</p></div>
+      <div class="card"><span class="icon">🤝</span><h3>Colaboración visible</h3><p>Sesiones de todo el equipo con propietario y expiración; intercepts simultáneos con filtros por cabecera; recuperación de sesiones huérfanas.</p></div>
+      <div class="card"><span class="icon">🔒</span><h3>Nada expuesto</h3><p>Todo el tráfico viaja por port-forward del API server: funciona en clústeres privados sin abrir ni un puerto ni crear un Ingress.</p></div>
+      <div class="card"><span class="icon">🆓</span><h3>Gratuito de verdad</h3><p>Todas las funciones, sin planes, sin cuentas, sin telemetría. Licencia MIT: úsalo en personal y en corporativo.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SEGURIDAD ============ -->
+<section id="seguridad" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">Seguridad y RBAC</span>
+      <h2>El modelo de permisos, sobre la mesa</h2>
+      <p>Sin sorpresas: aquí está exactamente lo que se necesita según el rol.</p>
+    </div>
+
+    <table class="tbl">
+      <thead><tr><th>Rol</th><th>Permisos necesarios</th></tr></thead>
+      <tbody>
+        <tr><td><b>Admin que instala</b> (una vez)</td><td>Crear namespaces, RBAC, deployments y secrets — lo estándar para desplegar cualquier componente en el clúster.</td></tr>
+        <tr><td><b>Desarrollador</b> (modo central + <code>grant-devs</code>)</td><td><code>pods get/list</code> + <code>pods/portforward create</code> en <code>kubedebugger-system</code>. Nada más, y heredado por grupo, no por persona.</td></tr>
+        <tr><td><b>Desarrollador</b> (modo por namespace)</td><td>El mismo par de permisos, pero en <em>su</em> namespace: es el perfil habitual de un dev en un AKS corporativo.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="grid c2">
+      <div class="card">
+        <h3>Autenticación del túnel</h3>
+        <p>Cada sesión viaja con un token aleatorio guardado en un Secret del clúster, verificado en tiempo constante por el manager. El tramo tu-máquina → clúster va cifrado por el propio API server (port-forward TLS).</p>
+      </div>
+      <div class="card">
+        <h3>Contención</h3>
+        <p>Namespaces de no-desarrollo protegidos con <code>kubedebugger.io/allow-intercept=false</code>, periodo de gracia configurable del watchdog y <code>kdb recover</code> para restaurar cualquier sesión ajena a mano.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DESCARGA ============ -->
+<section id="descarga">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">Descarga</span>
+      <h2>kubedebugger v0.1.0</h2>
+      <p>Un binario para tu máquina, imágenes para tu clúster y, si quieres, la extensión de VS Code.</p>
+    </div>
+
+    <div class="dl-grid">
+      <div class="dl-card">
+        <span class="os">🪟</span>
+        <h3>Windows</h3>
+        <span class="file mono">kubedebugger-0.1.0-windows-amd64.zip</span>
+        <p class="hint" style="color:var(--muted);font-size:.88rem">kdb.exe + extensión VSIX + install.ps1 / uninstall.ps1</p>
+        <a class="btn primary" href="https://github.com/JavierFrauca/kubedebugger/releases/latest">Descargar zip</a>
+      </div>
+      <div class="dl-card">
+        <span class="os">🐧</span>
+        <h3>Linux</h3>
+        <span class="file mono">kdb (linux-amd64)</span>
+        <p class="hint" style="color:var(--muted);font-size:.88rem">Dentro de kubedebugger-0.1.0-unix.tar.gz</p>
+        <a class="btn" href="https://github.com/JavierFrauca/kubedebugger/releases/latest">Descargar tar.gz</a>
+      </div>
+      <div class="dl-card">
+        <span class="os">🍎</span>
+        <h3>macOS (Apple Silicon)</h3>
+        <span class="file mono">kdb (darwin-arm64)</span>
+        <p class="hint" style="color:var(--muted);font-size:.88rem">Dentro de kubedebugger-0.1.0-unix.tar.gz</p>
+        <a class="btn" href="https://github.com/JavierFrauca/kubedebugger/releases/latest">Descargar tar.gz</a>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>Requisitos:</b> <code>kubectl</code> configurado contra tu clúster y el binario
+      <code>kdb</code>. Para la extensión de VS Code, VS Code ≥ 1.90. Los desarrolladores no
+      necesitan Go ni Node: eso es solo para compilar desde fuente.
+    </div>
+    <div class="warn">
+      <b>Importante para el clúster:</b> las imágenes del manager y del fake-proxy deben
+      publicarse en un registro accesible desde tu clúster (en AKS, tu ACR). El paquete
+      documenta el paso a paso; con <code>KUBEDEBUGGER_MANAGER_IMAGE</code> y
+      <code>KUBEDEBUGGER_FAKE_IMAGE</code> apuntas a tu registro y no repites flags.
+    </div>
+  </div>
+</section>
+
+<!-- ============ ESTADO ============ -->
+<section id="estado" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">Honestidad técnica</span>
+      <h2>Estado y hoja de ruta</h2>
+      <p>Preferimos decir lo que falta antes que vender humo. Esto es lo validado y lo que viene.</p>
+    </div>
+    <div class="grid c2">
+      <div class="card">
+        <h3>✅ Validado (v0.1.0)</h3>
+        <p>
+          Validación end-to-end contra clúster real de pruebas: intercept forward y mock,
+          restauración exacta del deployment, watchdog de sesiones huérfanas, modo
+          restringido con fallback al manager y suite de tests de CLI, manager, fake-proxy
+          y extensión.
+        </p>
+      </div>
+      <div class="card">
+        <h3>🛠 En camino (v1)</h3>
+        <p>
+          TLS extremo a extremo en el tramo interno del túnel, filtrado por cabecera
+          integrado en el camino del tráfico, alta disponibilidad del manager, métricas y
+          publicación de imágenes en registro público para instalar sin tocar un Dockerfile.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">FAQ</span>
+      <h2>Preguntas que haría un sysadmin</h2>
+    </div>
+
+    <details class="faq" open>
+      <summary>¿De verdad es 100% gratuito?</summary>
+      <div class="a"><p>Sí. Todas las funciones, sin planes de pago, sin registro de usuarios y sin telemetría de ningún tipo. Se distribuye bajo licencia MIT: puedes usarlo en proyectos personales y en entornos corporativos, modificarlo y redistribuirlo.</p></div>
+    </details>
+    <details class="faq">
+      <summary>¿Es código abierto?</summary>
+      <div class="a"><p>El proyecto se distribuye bajo licencia MIT. La publicación del árbol de fuentes completo está en evaluación; los paquetes que descargas incluyen el texto de la licencia y son de libre uso, estudio y redistribución conforme a ella. Si la apertura de fuentes es un requisito para tu organización, escríbenos por <a href="contacto.html">contacto</a>: nos ayuda a priorizar.</p></div>
+    </details>
+    <details class="faq">
+      <summary>¿Qué puede romper un desarrollador en el clúster?</summary>
+      <div class="a"><p>Muy poco, y todo se recupera. El intercept guarda un snapshot del deployment y lo restaura al desconectar; si la máquina del dev desaparece, el watchdog del manager lo restaura tras el periodo de gracia; cualquier sesión ajena se puede restaurar con <code>kdb recover</code>; y los namespaces que quieras blindar se marcan con <code>kubedebugger.io/allow-intercept=false</code>. Además, el dev nunca ejecuta mutaciones: las hace el manager con su ServiceAccount.</p></div>
+    </details>
+    <details class="faq">
+      <summary>¿Funciona con un AKS privado?</summary>
+      <div class="a"><p>Sí. El CLI y el túnel usan el port-forward del API server: no hace falta exponer ningún servicio, LoadBalancer ni Ingress, y no depende de que el clúster tenga endpoint público.</p></div>
+    </details>
+    <details class="faq">
+      <summary>¿Qué lenguajes y frameworks soporta?</summary>
+      <div class="a"><p>Todos los que escuchen en un puerto TCP local: Go, Java, Node, .NET, Python, Rust… kubedebugger no instrumenta tu proceso, solo le entrega el tráfico en <code>127.0.0.1</code>. Si tu IDE puede depurar un servidor local, puede depurar un servicio interceptado.</p></div>
+    </details>
+    <details class="faq">
+      <summary>¿Y si dos personas interceptan el mismo servicio?</summary>
+      <div class="a"><p>Con el modo híbrido, cada una se filtra su tráfico por cabecera (<code>--http-header</code>) o ruta, y el resto lo atienden los mocks. Todas las sesiones son visibles con <code>kdb status --all</code>, con propietario y expiración.</p></div>
+    </details>
+    <details class="faq">
+      <summary>¿Qué datos salen de mi máquina o del clúster?</summary>
+      <div class="a"><p>Ninguno hacia nosotros. El tráfico interceptado viaja del clúster a tu máquina por el túnel; no hay servidor intermedio de kubedebugger, no hay cuentas, y la herramienta no envía métricas ni telemetría. Las herramientas de terceros que ya usas (kubectl, tu clúster, tu registro de imágenes) siguen siendo cosa tuya.</p></div>
+    </details>
+    <details class="faq">
+      <summary>¿Sirve para clústeres locales (kind, minikube, Docker Desktop)?</summary>
+      <div class="a"><p>Sí, y de hecho el propio proyecto se valida así de forma automatizada. El flujo es idéntico al de un AKS corporativo: <code>kdb install</code>, <code>kdb connect</code>, <code>kdb intercept</code>.</p></div>
+    </details>
+    <details class="faq">
+      <summary>¿Cómo se actualiza?</summary>
+      <div class="a"><p>Descarga el paquete nuevo y ejecuta de nuevo <code>install.ps1</code> / sustituye el binario. <code>kdb install</code> es idempotente (upsert) y conserva el secret de sesión entre reinstalaciones; <code>kdb version</code> te dice qué versiones corren el CLI y el manager.</p></div>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ PIE ============ -->
+<footer class="site">
+  <div class="container">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:10px">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <path d="M16 2 L28 9 V23 L16 30 L4 23 V9 Z" stroke="#2dd4bf" stroke-width="2" fill="rgba(45,212,191,.08)"/>
+            <text x="8" y="21" font-family="Consolas, monospace" font-size="11" fill="#2dd4bf" font-weight="bold">&gt;_</text>
+          </svg>
+          <span class="name mono"><b>kube</b>debugger</span>
+        </a>
+        <p>Depura microservicios de Kubernetes en tu máquina: tráfico real, breakpoints reales, cero cambios en tus imágenes.<br>Gratuito · Licencia MIT · Sin telemetría.</p>
+      </div>
+      <div>
+        <h4>Producto</h4>
+        <ul>
+          <li><a href="index.html#como-funciona">Cómo funciona</a></li>
+          <li><a href="index.html#ventajas">Ventajas</a></li>
+          <li><a href="index.html#instalacion">Instalación</a></li>
+          <li><a href="index.html#descarga">Descarga</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Proyecto</h4>
+        <ul>
+          <li><a href="acerca-de.html">Acerca de</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+          <li><a href="https://github.com/JavierFrauca/kubedebugger">GitHub</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="legal/aviso-legal.html">Aviso legal</a></li>
+          <li><a href="legal/privacidad.html">Privacidad</a></li>
+          <li><a href="legal/cookies.html">Cookies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal-line">
+      <span>© <span data-year>2026</span> kubedebugger · kubedebugger.es</span>
+      <span class="mono" style="font-size:.85rem">hecho con cariño por gente que ha depurado con <code>kubectl logs -f</code> demasiado tiempo</span>
+    </div>
+  </div>
+</footer>
+
+<div id="cookie-banner" role="dialog" aria-label="Aviso sobre cookies">
+  <span class="txt">
+    Esta web <b>no utiliza cookies</b> propias ni de terceros, ni analítica, ni rastreo.
+    Solo guardamos en tu navegador una preferencia local para no volver a mostrarte este aviso.
+    <a href="legal/cookies.html">Más información</a>
+  </span>
+  <button type="button">Entendido</button>
+</div>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

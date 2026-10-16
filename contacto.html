@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto — kubedebugger</title>
+  <meta name="description" content="Contacta con el equipo de kubedebugger: dudas, incidencias, sugerencias y soporte de la comunidad.">
+  <link rel="canonical" href="https://kubedebugger.es/contacto.html">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 L28 9 V23 L16 30 L4 23 V9 Z' stroke='%232dd4bf' stroke-width='2' fill='%230b1120'/%3E%3Ctext x='8' y='21' font-family='monospace' font-size='11' fill='%232dd4bf' font-weight='bold'%3E%3E_%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="nav">
+    <a class="brand" href="index.html" aria-label="kubedebugger — inicio">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path d="M16 2 L28 9 V23 L16 30 L4 23 V9 Z" stroke="#2dd4bf" stroke-width="2" fill="rgba(45,212,191,.08)"/>
+        <text x="8" y="21" font-family="Consolas, monospace" font-size="11" fill="#2dd4bf" font-weight="bold">&gt;_</text>
+      </svg>
+      <span class="name mono"><b>kube</b>debugger</span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Abrir menú">☰ Menú</button>
+    <nav class="links" aria-label="Principal">
+      <a href="index.html#como-funciona">Cómo funciona</a>
+      <a href="index.html#ventajas">Ventajas</a>
+      <a href="index.html#instalacion">Instalación</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="acerca-de.html">Acerca de</a>
+      <a href="contacto.html">Contacto</a>
+      <a class="cta" href="index.html#descarga">Descargar</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero" style="padding-bottom:24px">
+  <div class="container">
+    <span class="kicker">Contacto</span>
+    <h1>Hablemos de <em>clústeres</em></h1>
+    <p class="lead">
+      Dudas de despliegue, incidencias, sugerencias o «¿lo estoy usando bien?».
+      Respondemos por correo.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <form class="contact" id="contact-form">
+      <p style="color:var(--muted);font-size:.92rem">
+        Este formulario no envía nada a ningún servidor: abre tu cliente de correo con el
+        mensaje ya compuesto a <code>contacto@kubedebugger.es</code>. Si lo prefieres,
+        escribe directamente a esa dirección.
+      </p>
+      <label for="f-name">Nombre</label>
+      <input id="f-name" name="name" type="text" required autocomplete="name">
+      <label for="f-email">Correo electrónico</label>
+      <input id="f-email" name="email" type="email" required autocomplete="email">
+      <label for="f-topic">Asunto</label>
+      <select id="f-topic" name="topic">
+        <option>Consulta general</option>
+        <option>Incidencia / bug</option>
+        <option>Sugerencia de función</option>
+        <option>Despliegue en mi organización</option>
+        <option>Otros</option>
+      </select>
+      <label for="f-message">Mensaje</label>
+      <textarea id="f-message" name="message" rows="7" required
+        placeholder="Si es una incidencia: versión de kdb (kdb version), clúster (AKS, kind…), comando ejecutado y qué esperabas frente a qué pasó."></textarea>
+      <p class="hint">
+        Al enviar se abrirá tu cliente de correo. Los datos del formulario no se almacenan
+        en este sitio web (ver <a href="legal/privacidad.html">política de privacidad</a>).
+      </p>
+      <div class="actions" style="margin:18px 0 0">
+        <button class="btn primary" type="submit">Componer correo ✉</button>
+      </div>
+      <p id="contact-sent" style="display:none;color:var(--green);margin-top:12px">
+        ✓ Se abrió tu cliente de correo con el mensaje listo. Si no se abrió, escribe a
+        <a href="mailto:contacto@kubedebugger.es">contacto@kubedebugger.es</a> directamente.
+      </p>
+    </form>
+
+    <div style="margin-top:40px" class="grid c3">
+      <div class="card">
+        <span class="icon">⏱</span>
+        <h3>Tiempo de respuesta</h3>
+        <p>Es un proyecto mantenido en tiempo personal: solemos responder en unos días, no en minutos. Para temas de despliegue corporativo, indícanos tu entorno (AKS, versión de Kubernetes, perfil de permisos).</p>
+      </div>
+      <div class="card">
+        <span class="icon">🐞</span>
+        <h3>Antes de escribir</h3>
+        <p><code>kdb version</code> y <code>kdb status --all</code> resuelven el 80% de los misterios. La guía de instalación incluye una tabla de solución de problemas bastante honesta.</p>
+      </div>
+      <div class="card">
+        <span class="icon">🔐</span>
+        <h3>Seguridad</h3>
+        <p>¿Has encontrado un fallo de seguridad? Descríbelo por correo marcando el asunto con <code>[security]</code> y evita publicarlo abierto hasta que lo corrijamos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site">
+  <div class="container">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:10px">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <path d="M16 2 L28 9 V23 L16 30 L4 23 V9 Z" stroke="#2dd4bf" stroke-width="2" fill="rgba(45,212,191,.08)"/>
+            <text x="8" y="21" font-family="Consolas, monospace" font-size="11" fill="#2dd4bf" font-weight="bold">&gt;_</text>
+          </svg>
+          <span class="name mono"><b>kube</b>debugger</span>
+        </a>
+        <p>Depura microservicios de Kubernetes en tu máquina: tráfico real, breakpoints reales, cero cambios en tus imágenes.<br>Gratuito · Licencia MIT · Sin telemetría.</p>
+      </div>
+      <div>
+        <h4>Producto</h4>
+        <ul>
+          <li><a href="index.html#como-funciona">Cómo funciona</a></li>
+          <li><a href="index.html#ventajas">Ventajas</a></li>
+          <li><a href="index.html#instalacion">Instalación</a></li>
+          <li><a href="index.html#descarga">Descarga</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Proyecto</h4>
+        <ul>
+          <li><a href="acerca-de.html">Acerca de</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+          <li><a href="https://github.com/JavierFrauca/kubedebugger">GitHub</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="legal/aviso-legal.html">Aviso legal</a></li>
+          <li><a href="legal/privacidad.html">Privacidad</a></li>
+          <li><a href="legal/cookies.html">Cookies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal-line">
+      <span>© <span data-year>2026</span> kubedebugger · kubedebugger.es</span>
+      <span class="mono" style="font-size:.85rem">hecho con cariño por gente que ha depurado con <code>kubectl logs -f</code> demasiado tiempo</span>
+    </div>
+  </div>
+</footer>
+
+<div id="cookie-banner" role="dialog" aria-label="Aviso sobre cookies">
+  <span class="txt">
+    Esta web <b>no utiliza cookies</b> propias ni de terceros, ni analítica, ni rastreo.
+    Solo guardamos en tu navegador una preferencia local para no volver a mostrarte este aviso.
+    <a href="legal/cookies.html">Más información</a>
+  </span>
+  <button type="button">Entendido</button>
+</div>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
