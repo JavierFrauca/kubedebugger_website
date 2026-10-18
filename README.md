@@ -64,10 +64,13 @@ git add -A && git commit -m "update web" && git push
 
 - **TTL del sitio**: cero dependencias externas ⇒ nada que actualizar por CVEs de
   terceros. Cambiar textos es editar HTML y push.
-- **Descargas**: los botones de descarga apuntan a
-  `https://github.com/JavierFrauca/kubedebugger/releases/latest`. Los enlaces funcionarán
-  en cuanto el repositorio del producto sea público y publique releases; hasta entonces
-  devolverán 404.
+- **Descargas**: los botones apuntan a
+  `https://github.com/JavierFrauca/kubedebugger_website/releases/latest/download/<nombre-estable>`
+  (nombres sin versión: `kubedebugger-windows-amd64.zip`, `kubedebugger-unix.tar.gz`,
+  `kubedebugger-extension.vsix`, `SHA256SUMS.txt`). Los artefactos los genera
+  automáticamente el workflow `release-website` del repo privado `kubedebugger`
+  (trigger: tags `v*` o manual) y los publica como release de ESTE repo; por eso
+  los enlaces de la web nunca cambian entre versiones.
 - **Legal**: completa en `legal/aviso-legal.html` los campos marcados
   `<!-- COMPLETAR -->` (NIF y domicilio del titular) antes de promocionar el sitio.
 - **Contacto**: el correo `contacto@kubedebugger.es` debe existir (crea el buzón o una
