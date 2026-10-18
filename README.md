@@ -67,7 +67,7 @@ git add -A && git commit -m "update web" && git push
 - **Descargas**: los botones apuntan a
   `https://github.com/JavierFrauca/kubedebugger_website/releases/latest/download/<nombre-estable>`
   (nombres sin versión: `kubedebugger-windows-amd64.zip`, `kubedebugger-unix.tar.gz`,
-  `kubedebugger-extension.vsix`, `SHA256SUMS.txt`). Los artefactos los genera
+  `kubedebugger-setup.msi`, `kubedebugger-extension.vsix`, `SHA256SUMS.txt`). Los artefactos los genera
   automáticamente el workflow `release-website` del repo privado `kubedebugger`
   (trigger: tags `v*` o manual) y los publica como release de ESTE repo; por eso
   los enlaces de la web nunca cambian entre versiones.
