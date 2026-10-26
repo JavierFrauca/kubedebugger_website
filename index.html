@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>kubedebugger — Depura tus microservicios de Kubernetes en tu propia máquina</title>
-  <meta name="description" content="kubedebugger intercepta el tráfico real de un servicio de Kubernetes, escala su deployment a cero y lo redirige a tu 127.0.0.1: depura con breakpoints en tu IDE contra datos reales del entorno. 100% gratuito, licencia MIT.">
+  <meta name="description" content="kubedebugger intercepta el tráfico real de un servicio de Kubernetes, escala su deployment a cero y lo redirige a tu 127.0.0.1: depura con breakpoints en tu IDE contra datos reales del entorno. 100% gratuito, licencia Apache-2.0.">
   <meta property="og:title" content="kubedebugger — Depura microservicios de Kubernetes en local">
-  <meta property="og:description" content="Tráfico real del clúster en tu localhost. Breakpoints en tu IDE. Cero cambios en tus imágenes. Gratuito, licencia MIT.">
+  <meta property="og:description" content="Tráfico real del clúster en tu localhost. Breakpoints en tu IDE. Cero cambios en tus imágenes. Gratuito, licencia Apache-2.0.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://kubedebugger.es/">
   <link rel="canonical" href="https://kubedebugger.es/">
@@ -44,7 +44,7 @@
   <div class="container">
     <div class="hero-grid">
       <div>
-        <span class="kicker"><span class="dot"></span> v0.1.0 · 100% gratuito · licencia MIT</span>
+        <span class="kicker"><span class="dot"></span> v0.2.0 · 100% gratuito · licencia Apache-2.0</span>
         <h1>Depura tus microservicios de <em>Kubernetes</em> en tu propia máquina</h1>
         <p class="lead">
           kubedebugger intercepta el <b>tráfico real</b> de un servicio del clúster, escala
@@ -351,6 +351,23 @@ orders          ClusterIP  interceptable</span>
   </div>
 </section>
 
+<!-- ============ SALIDA LOCAL → CLÚSTER ============ -->
+<section id="salida" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag purple">Y también al revés</span>
+      <h2>Tu máquina puede llamar al clúster, sin admin</h2>
+      <p>El intercept trae el tráfico del clúster a tu localhost. La dirección contraria —que tu proceso local alcance una base de datos, una cola o una API interna— la resuelven tres comandos que salen por el túnel de tu sesión: quien conecta hacia dentro es el manager, que ya está dentro.</p>
+    </div>
+    <div class="grid c3">
+      <div class="card" style="--c:#0078d4"><div class="icon-chip soft">🔌</div><h3>kdb dial</h3><p>Un host del clúster en un puerto local: <code>kdb dial orders 5432 --local-port 5432</code> y tu cliente de base de datos se conecta a <code>127.0.0.1:5432</code>. Los nombres internos los resuelve el manager.</p></div>
+      <div class="card" style="--c:#107c10"><div class="icon-chip soft">🌐</div><h3>kdb proxy</h3><p>Proxy HTTP/SOCKS hacia dentro del clúster: <code>HTTP_PROXY</code> apuntando a <code>127.0.0.1:8118</code> y curl, pip o npm atraviesan el túnel. Con <code>--env-file</code> escribe las variables por ti.</p></div>
+      <div class="card" style="--c:#8661c5"><div class="icon-chip soft">📛</div><h3>kdb dns</h3><p>Los nombres internos (<code>orders.demo.svc.cluster.local</code>) resuelven en tu máquina: bloque en el hosts con IP de loopback por servicio y un listener local por puerto, con resolutor UDP opcional.</p></div>
+    </div>
+    <p style="color:var(--muted);font-size:.92rem">Y cuando algo queda huérfano (portátil apagado a mitad de sesión), <code>kdb doctor</code> lo diagnostica y <code>kdb doctor --fix</code> lo repara: fakes sin sesión, intercepts a medias, specs ilegibles y restos de versiones anteriores.</p>
+  </div>
+</section>
+
 <!-- ============ INSTALACIÓN ============ -->
 <section id="instalacion" class="alt">
   <div class="container">
@@ -416,8 +433,8 @@ orders          ClusterIP  interceptable</span>
       <div class="card" style="--c:#8661c5"><div class="icon-chip soft">🏢</div><h3>Pensado para clústeres corporativos</h3><p>Modo restringido para perfiles mínimos (solo pods + port-forward), alta vía grupo de Entra ID y fallback automático al manager ante un 403.</p></div>
       <div class="card" style="--c:#038387"><div class="icon-chip soft">🛟</div><h3>Autocuración</h3><p>Snapshot del estado original, restauración exacta al desconectar y watchdog que levanta el clúster si tu máquina desaparece sin despedirse.</p></div>
       <div class="card" style="--c:#e3008c"><div class="icon-chip soft">🤝</div><h3>Colaboración visible</h3><p>Sesiones de todo el equipo con propietario y expiración; intercepts simultáneos con filtros por cabecera; recuperación de sesiones huérfanas.</p></div>
-      <div class="card" style="--c:#ff8c00"><div class="icon-chip soft">🔒</div><h3>Nada expuesto</h3><p>Todo el tráfico viaja por port-forward del API server: funciona en clústeres privados sin abrir ni un puerto ni crear un Ingress.</p></div>
-      <div class="card" style="--c:#005a9e"><div class="icon-chip soft">🆓</div><h3>Gratuito de verdad</h3><p>Todas las funciones, sin planes, sin cuentas, sin telemetría. Licencia MIT: úsalo en personal y en corporativo.</p></div>
+      <div class="card" style="--c:#ff8c00"><div class="icon-chip soft">🔒</div><h3>Nada expuesto</h3><p>El acceso al manager va por port-forward del API server (clústeres privados sin abrir puertos ni Ingress) y el túnel de tráfico va cifrado con TLS: certificado del manager persistido en un Secret y verificado por el fake y por tu máquina.</p></div>
+      <div class="card" style="--c:#005a9e"><div class="icon-chip soft">🆓</div><h3>Gratuito de verdad</h3><p>Todas las funciones, sin planes, sin cuentas, sin telemetría. Licencia Apache-2.0: úsalo en personal y en corporativo.</p></div>
     </div>
   </div>
 </section>
@@ -460,7 +477,7 @@ orders          ClusterIP  interceptable</span>
   <div class="container">
     <div class="section-head">
       <span class="tag flame">Descarga</span>
-      <h2>kubedebugger v0.1.0</h2>
+      <h2>kubedebugger v0.2.0</h2>
       <p>Un binario para tu máquina, imágenes para tu clúster y, si quieres, la extensión de VS Code.</p>
     </div>
 
@@ -533,21 +550,26 @@ orders          ClusterIP  interceptable</span>
     <div class="grid c2">
       <div class="card" style="--c:#107c10">
         <div class="icon-chip">✅</div>
-        <h3>Validado (v0.1.0)</h3>
+        <h3>Validado (v0.2.0)</h3>
         <p>
-          Validación end-to-end contra clúster real de pruebas: intercept forward y mock,
-          restauración exacta del deployment, watchdog de sesiones huérfanas, modo
-          restringido con fallback al manager y suite de tests de CLI, manager, fake-proxy
-          y extensión.
+          253 tests de Go y 45 de la extensión en verde, y validación end-to-end de 13
+          pasos contra clúster kind real ejecutada en DOS plataformas (Windows y Ubuntu):
+          intercept forward y mock, restauración exacta, watchdog, allowlist,
+          <code>kdb doctor --fix</code>, dos desarrolladores sobre el mismo servicio por
+          cabecera y modo restringido. La operación contra un clúster remoto desde otra
+          máquina (install, intercept, detach) se probó por el API server a través de un
+          túnel SSH. Túnel TLS con certificado persistido y verificado por fake y demonio.
         </p>
       </div>
       <div class="card" style="--c:#f25022">
         <div class="icon-chip">🛠️</div>
-        <h3>En camino (v1)</h3>
+        <h3>En camino (v0.3+)</h3>
         <p>
-          TLS extremo a extremo en el tramo interno del túnel, filtrado por cabecera
-          integrado en el camino del tráfico, alta disponibilidad del manager, métricas y
-          publicación de imágenes en registro público para instalar sin tocar un Dockerfile.
+          El TLS del túnel, el filtrado por cabecera, StatefulSet, la salida local→clúster
+          (<code>dial</code>/<code>proxy</code>/<code>dns</code>) y el diagnóstico
+          <code>kdb doctor</code> ya están en v0.2. Queda: enrutar subredes a nivel L3
+          (interfaz TUN/wintun, tipo Telepresence), alta disponibilidad del manager,
+          métricas y tests de los caminos de error del handshake TLS.
         </p>
       </div>
     </div>
@@ -564,11 +586,11 @@ orders          ClusterIP  interceptable</span>
 
     <details class="faq" open>
       <summary>¿De verdad es 100% gratuito?</summary>
-      <div class="a"><p>Sí. Todas las funciones, sin planes de pago, sin registro de usuarios y sin telemetría de ningún tipo. Se distribuye bajo licencia MIT: puedes usarlo en proyectos personales y en entornos corporativos, modificarlo y redistribuirlo.</p></div>
+      <div class="a"><p>Sí. Todas las funciones, sin planes de pago, sin registro de usuarios y sin telemetría de ningún tipo. Se distribuye bajo licencia Apache-2.0: puedes usarlo en proyectos personales y en entornos corporativos, modificarlo y redistribuirlo.</p></div>
     </details>
     <details class="faq">
       <summary>¿Es código abierto?</summary>
-      <div class="a"><p>El proyecto se distribuye bajo licencia MIT. La publicación del árbol de fuentes completo está en evaluación; los paquetes que descargas incluyen el texto de la licencia y son de libre uso, estudio y redistribución conforme a ella. Si la apertura de fuentes es un requisito para tu organización, escríbenos por <a href="contacto.html">contacto</a>: nos ayuda a priorizar.</p></div>
+      <div class="a"><p>Sí. El árbol de fuentes completo está publicado bajo licencia Apache-2.0 en <a href="https://github.com/JavierFrauca/kubedebugger">github.com/JavierFrauca/kubedebugger</a>: puedes estudiarlo, modificarlo y redistribuirlo, en proyectos personales y en entornos corporativos. Los releases se generan automáticamente desde el código etiquetado con GitHub Actions.</p></div>
     </details>
     <details class="faq">
       <summary>¿Qué puede romper un desarrollador en el clúster?</summary>
@@ -615,7 +637,7 @@ orders          ClusterIP  interceptable</span>
           </svg>
           <span class="name mono"><b>kube</b>debugger</span>
         </a>
-        <p>Depura microservicios de Kubernetes en tu máquina: tráfico real, breakpoints reales, cero cambios en tus imágenes.<br>Gratuito · Licencia MIT · Sin telemetría.</p>
+        <p>Depura microservicios de Kubernetes en tu máquina: tráfico real, breakpoints reales, cero cambios en tus imágenes.<br>Gratuito · Licencia Apache-2.0 · Sin telemetría.</p>
       </div>
       <div>
         <h4>Producto</h4>
