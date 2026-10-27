@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>kubedebugger — Depura tus microservicios de Kubernetes en tu propia máquina</title>
-  <meta name="description" content="kubedebugger intercepta el tráfico real de un servicio de Kubernetes, escala su deployment a cero y lo redirige a tu 127.0.0.1: depura con breakpoints en tu IDE contra datos reales del entorno. 100% gratuito, licencia Apache-2.0.">
+  <meta name="description" content="kubedebugger intercepta el tráfico real de un servicio de Kubernetes, escala su deployment a cero y lo redirige a tu 127.0.0.1: depura con breakpoints en tu IDE contra datos reales del entorno. 100% gratuito para uso personal y comercial.">
   <meta property="og:title" content="kubedebugger — Depura microservicios de Kubernetes en local">
-  <meta property="og:description" content="Tráfico real del clúster en tu localhost. Breakpoints en tu IDE. Cero cambios en tus imágenes. Gratuito, licencia Apache-2.0.">
+  <meta property="og:description" content="Tráfico real del clúster en tu localhost. Breakpoints en tu IDE. Cero cambios en tus imágenes. Gratuito para uso personal y comercial.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://kubedebugger.es/">
   <link rel="canonical" href="https://kubedebugger.es/">
@@ -44,7 +44,7 @@
   <div class="container">
     <div class="hero-grid">
       <div>
-        <span class="kicker"><span class="dot"></span> v0.2.0 · 100% gratuito · licencia Apache-2.0</span>
+        <span class="kicker"><span class="dot"></span> v0.2.0 · 100% gratuito · uso personal y comercial</span>
         <h1>Depura tus microservicios de <em>Kubernetes</em> en tu propia máquina</h1>
         <p class="lead">
           kubedebugger intercepta el <b>tráfico real</b> de un servicio del clúster, escala
@@ -434,7 +434,7 @@ orders          ClusterIP  interceptable</span>
       <div class="card" style="--c:#038387"><div class="icon-chip soft">🛟</div><h3>Autocuración</h3><p>Snapshot del estado original, restauración exacta al desconectar y watchdog que levanta el clúster si tu máquina desaparece sin despedirse.</p></div>
       <div class="card" style="--c:#e3008c"><div class="icon-chip soft">🤝</div><h3>Colaboración visible</h3><p>Sesiones de todo el equipo con propietario y expiración; intercepts simultáneos con filtros por cabecera; recuperación de sesiones huérfanas.</p></div>
       <div class="card" style="--c:#ff8c00"><div class="icon-chip soft">🔒</div><h3>Nada expuesto</h3><p>El acceso al manager va por port-forward del API server (clústeres privados sin abrir puertos ni Ingress) y el túnel de tráfico va cifrado con TLS: certificado del manager persistido en un Secret y verificado por el fake y por tu máquina.</p></div>
-      <div class="card" style="--c:#005a9e"><div class="icon-chip soft">🆓</div><h3>Gratuito de verdad</h3><p>Todas las funciones, sin planes, sin cuentas, sin telemetría. Licencia Apache-2.0: úsalo en personal y en corporativo.</p></div>
+      <div class="card" style="--c:#005a9e"><div class="icon-chip soft">🆓</div><h3>Gratuito de verdad</h3><p>Todas las funciones, sin planes, sin cuentas, sin telemetría. Gratuito para uso personal y comercial; el código es del autor y no es público.</p></div>
     </div>
   </div>
 </section>
@@ -586,11 +586,11 @@ orders          ClusterIP  interceptable</span>
 
     <details class="faq" open>
       <summary>¿De verdad es 100% gratuito?</summary>
-      <div class="a"><p>Sí. Todas las funciones, sin planes de pago, sin registro de usuarios y sin telemetría de ningún tipo. Se distribuye bajo licencia Apache-2.0: puedes usarlo en proyectos personales y en entornos corporativos, modificarlo y redistribuirlo.</p></div>
+      <div class="a"><p>Sí. Todas las funciones, sin planes de pago, sin registro de usuarios y sin telemetría de ningún tipo. Es gratuito para uso personal y comercial, sin límite de tiempo. No es código abierto: el código es del autor y no se publica; lo que no puedes es modificarlo, hacer ingeniería inversa ni redistribuirlo. Los detalles, en el fichero LICENSE que viaja con cada paquete.</p></div>
     </details>
     <details class="faq">
       <summary>¿Es código abierto?</summary>
-      <div class="a"><p>De momento el código está en un repositorio privado. El software se distribuye bajo licencia Apache-2.0: los paquetes que descargas incluyen su texto y son de libre uso, modificación y redistribución en proyectos personales y en entornos corporativos. Si necesitas acceso a las fuentes para tu organización, escríbenos por <a href="contacto.html">contacto</a>. Los releases se generan automáticamente desde el código etiquetado con GitHub Actions.</p></div>
+      <div class="a"><p>No. kubedebugger es gratuito pero NO es código abierto: se distribuye bajo una licencia de uso gratuito (el código es del autor y no se publica). Puedes usarlo sin coste en proyectos personales y en entornos corporativos; lo que la licencia no concede es modificarlo, hacer ingeniería inversa o redistribuirlo. Si tu organización necesita acceso a las fuentes, escríbenos por <a href="contacto.html">contacto</a>.</p></div>
     </details>
     <details class="faq">
       <summary>¿Qué puede romper un desarrollador en el clúster?</summary>
@@ -637,7 +637,7 @@ orders          ClusterIP  interceptable</span>
           </svg>
           <span class="name mono"><b>kube</b>debugger</span>
         </a>
-        <p>Depura microservicios de Kubernetes en tu máquina: tráfico real, breakpoints reales, cero cambios en tus imágenes.<br>Gratuito · Licencia Apache-2.0 · Sin telemetría.</p>
+        <p>Depura microservicios de Kubernetes en tu máquina: tráfico real, breakpoints reales, cero cambios en tus imágenes.<br>Gratuito · Uso personal y comercial · Sin telemetría.</p>
       </div>
       <div>
         <h4>Producto</h4>
