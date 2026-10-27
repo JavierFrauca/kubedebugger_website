@@ -29,4 +29,4 @@ git add -A && git commit -m "update web" && git push
 
 ## Licencia del sitio
 
-Contenido del sitio bajo [MIT](LICENSE) (igual que el proyecto).
+Los contenidos del sitio están bajo [MIT](LICENSE). El SOFTWARE kubedebugger tiene su propia licencia de uso gratuito (gratuito para uso personal y comercial; código no público): ver el fichero LICENSE del [repositorio del producto](https://github.com/JavierFrauca/kubedebugger).
