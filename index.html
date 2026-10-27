@@ -594,7 +594,7 @@ orders          ClusterIP  interceptable</span>
     </details>
     <details class="faq">
       <summary>¿Qué puede romper un desarrollador en el clúster?</summary>
-      <div class="a"><p>Muy poco, y todo se recupera. El intercept guarda un snapshot del deployment y lo restaura al desconectar; si la máquina del dev desaparece, el watchdog del manager lo restaura tras el periodo de gracia; cualquier sesión ajena se puede restaurar con <code>kdb recover</code>; y los namespaces que quieras blindar se marcan con <code>kubedebugger.es/allow-intercept=false</code>. Además, el dev nunca ejecuta mutaciones: las hace el manager con su ServiceAccount.</p></div>
+      <div class="a"><p>Muy poco, y todo se recupera. El intercept guarda un snapshot del workload (Deployment o StatefulSet) y lo restaura al desconectar; si la máquina del dev desaparece, el watchdog del manager cierra solo su sesión tras el periodo de gracia —con el servicio compartido por varios desarrolladores, las demás siguen depurando— y repone las réplicas. Y si una restauración no puede completarse (un webhook la rechaza, un corte del API server), la sesión se conserva como ancla y el manager la reintenta: nada se queda a medias en silencio. Cualquier sesión huérfana se puede recuperar con <code>kdb recover</code> o diagnosticar y reparar con <code>kdb doctor --fix</code>; y los namespaces o servicios concretos que quieras blindar se marcan con <code>kubedebugger.es/allow-intercept=false</code>. Además, el dev nunca ejecuta mutaciones: las hace el manager con su ServiceAccount.</p></div>
     </details>
     <details class="faq">
       <summary>¿Funciona con un AKS privado?</summary>
