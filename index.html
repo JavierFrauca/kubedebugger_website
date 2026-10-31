@@ -44,7 +44,7 @@
   <div class="container">
     <div class="hero-grid">
       <div>
-        <span class="kicker"><span class="dot"></span> v0.4.0 · 100% gratuito · uso personal y comercial</span>
+        <span class="kicker"><span class="dot"></span> v1.0.0 · 100% gratuito · uso personal y comercial</span>
         <h1>Depura tus microservicios de <em>Kubernetes</em> en tu propia máquina</h1>
         <p class="lead">
           kubedebugger intercepta el <b>tráfico real</b> de un servicio del clúster, escala
@@ -487,7 +487,7 @@ orders          ClusterIP  interceptable</span>
   <div class="container">
     <div class="section-head">
       <span class="tag flame">Descarga</span>
-      <h2>kubedebugger v0.4.0</h2>
+      <h2>kubedebugger v1.0.0</h2>
       <p>Un binario para tu máquina, imágenes para tu clúster y, si quieres, la extensión de VS Code.</p>
     </div>
 
@@ -560,28 +560,32 @@ orders          ClusterIP  interceptable</span>
     <div class="grid c2">
       <div class="card" style="--c:#107c10">
         <div class="icon-chip">✅</div>
-        <h3>Validado (v0.4.0)</h3>
+        <h3>Validado (v1.0.0)</h3>
         <p>
-          276 tests de Go y 53 de la extensión en verde, y validación end-to-end de 14
-          pasos contra clúster kind real: intercept forward y mock, restauración exacta,
-          watchdog, allowlist, <code>kdb doctor --fix</code>, dos desarrolladores sobre el
-          mismo servicio por cabecera, modo restringido y fallback al origen con endpoints
-          híbridos y edición en caliente. La base de 13 pasos se ejecutó en DOS plataformas
-          (Windows y Ubuntu); el paso nuevo del fallback, en Ubuntu y en CI. La operación
-          contra un clúster remoto desde otra máquina (install, intercept, detach) se probó
-          por el API server a través de un túnel SSH. Túnel TLS con certificado persistido y
-          verificado por fake y demonio.
+          307 tests de Go y 53 de la extensión en verde (con detector de carreras en los
+          paquetes concurrentes), y validación end-to-end de 14 pasos contra clúster kind
+          real: intercept forward y mock, restauración exacta, watchdog, allowlist,
+          <code>kdb doctor --fix</code>, dos desarrolladores sobre el mismo servicio por
+          cabecera, modo restringido y fallback al origen con endpoints híbridos y edición
+          en caliente. La base de 13 pasos se ejecutó en DOS plataformas (Windows y
+          Ubuntu); los pasos nuevos, en Ubuntu y en CI. La operación contra un clúster
+          remoto desde otra máquina (install, intercept, detach) se probó por el API
+          server a través de un túnel SSH. Túnel TLS con certificado persistido y
+          verificado por fake y demonio, y desde 1.0 el fake se autentica con un token
+          propio de su servicio: el token maestro no sale del manager.
         </p>
       </div>
       <div class="card" style="--c:#f25022">
         <div class="icon-chip">🛠️</div>
-        <h3>En camino (v0.5+)</h3>
+        <h3>Después de 1.0</h3>
         <p>
-          El dashboard de la extensión (v0.3) y el fallback al origen con endpoints
-          editables en caliente (v0.4) ya están. Queda por delante (ninguna de estas
-          líneas está desarrollada en la versión actual): enrutar subredes a nivel L3
-          (interfaz TUN/wintun, tipo Telepresence), alta disponibilidad del manager
-          y métricas.
+          La 1.0 recoge la auditoría de código completa: los cuatro hallazgos graves
+          arreglados, el manager endurecido (handshake con deadline, límites de cuerpo y
+          logs, barrera anti-SSRF en el dial) y el RBAC acotado por nombre. Lo que viene
+          después no está comprometido: en valoración están credenciales por
+          desarrollador con rotación y lo que pida el uso real. El modo L3 tipo
+          Telepresence (interfaz TUN/wintun) queda descartado de momento: con los modos
+          actuales sobra.
         </p>
       </div>
     </div>
