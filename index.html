@@ -44,7 +44,7 @@
   <div class="container">
     <div class="hero-grid">
       <div>
-        <span class="kicker"><span class="dot"></span> v0.2.0 · 100% gratuito · uso personal y comercial</span>
+        <span class="kicker"><span class="dot"></span> v0.4.0 · 100% gratuito · uso personal y comercial</span>
         <h1>Depura tus microservicios de <em>Kubernetes</em> en tu propia máquina</h1>
         <p class="lead">
           kubedebugger intercepta el <b>tráfico real</b> de un servicio del clúster, escala
@@ -285,7 +285,7 @@ orders          ClusterIP  interceptable</span>
     <h3>Anatomía de un intercept</h3>
     <ol class="steps">
       <li><b>Snapshot.</b> <code>kdb</code> guarda el estado original del deployment (réplicas, selector, imagen).</li>
-      <li><b>Escala a cero.</b> El workload original deja de correr: no hay doble procesamiento de mensajes ni escrituras duplicadas.</li>
+      <li><b>Escala a cero.</b> El workload original deja de correr: no hay doble procesamiento de mensajes ni escrituras duplicadas. (Con <code>--fallback-origin</code> el micro <b>sigue en pie</b>: solo las rutas que reclamas dejan de llegar a él.)</li>
       <li><b>Fake-proxy.</b> Se despliega un pod mínimo y el Service se redirige a él. Para el resto del clúster, el servicio «sigue ahí».</li>
       <li><b>Túnel.</b> El fake-proxy envía el tráfico hacia tu máquina por un port-forward autenticado con token a través del API server. <b>Nada se expone</b>: ni LoadBalancer, ni Ingress, ni NodePort.</li>
       <li><b>Depuras.</b> Las peticiones llegan a tu <code>127.0.0.1:puerto</code>. Con <code>--env-file</code>, tu proceso local arranca con las variables del pod (connection strings incluidas): tu local consume y publica en los brokers y bases de datos <b>reales</b> del entorno.</li>
@@ -337,8 +337,17 @@ orders          ClusterIP  interceptable</span>
       </div>
     </div>
 
+    <div class="note">
+      <b>Nuevo en v0.4 — fallback al origen:</b> con <code>--fallback-origin</code> el micro
+      no se apaga: sus réplicas y su HPA siguen en marcha y el tráfico que no cubren tus
+      endpoints <b>lo siguen sirviendo los pods reales</b>. Reclamas a tu máquina o al mock
+      solo las rutas que quieres (método + ruta exacta) y las defines donde te venga mejor:
+      YAML en el CLI, formulario en la TUI o asistente en la extensión de VS Code. Se editan
+      en caliente con <code>kdb mocks &lt;sesión&gt;</code>, sin re-interceptar.
+    </div>
+
     <pre class="code"><span class="c"># mocks.yaml — el fake responde por ti</span>
-<span class="k">routes</span>:
+<span class="k">rules</span>:
   - <span class="k">path</span>: <span class="s">/api/orders</span>
     <span class="k">method</span>: <span class="s">GET</span>
     <span class="k">status</span>: <span class="a">200</span>
@@ -347,7 +356,7 @@ orders          ClusterIP  interceptable</span>
   - <span class="k">path</span>: <span class="s">/api/orders</span>
     <span class="k">method</span>: <span class="s">POST</span>
     <span class="k">status</span>: <span class="a">503</span>          <span class="c"># prueba cómo reacciona tu cliente a un error</span>
-    <span class="k">errorRate</span>: <span class="a">0.3</span></pre>
+    <span class="k">errorPercent</span>: <span class="a">30</span></pre>
   </div>
 </section>
 
@@ -429,6 +438,7 @@ orders          ClusterIP  interceptable</span>
     <div class="grid c4">
       <div class="card" style="--c:#0078d4"><div class="icon-chip soft">🎯</div><h3>Breakpoints, no prints</h3><p>Depura con tu IDE de siempre: breakpoints, inspección de variables, paso a paso. Contra el tráfico real del entorno.</p></div>
       <div class="card" style="--c:#f25022"><div class="icon-chip soft">📦</div><h3>Cero cambios en tus imágenes</h3><p>Ni sidecars ni agentes de depuración en tus Dockerfiles. Tus manifiestos y tu pipeline quedan intactos.</p></div>
+      <div class="card" style="--c:#ff8c00"><div class="icon-chip soft">🪄</div><h3>Sobrescribe sin apagar</h3><p>Con el fallback al origen el micro sigue en pie: depura o mokea solo los endpoints que quieras y el resto del tráfico lo atienden los pods reales.</p></div>
       <div class="card" style="--c:#107c10"><div class="icon-chip soft">🔌</div><h3>Entornos reales, sin duplicar</h3><p>Tu proceso local consume los brokers y bases de datos del entorno con las variables del pod. Sin réplicas fantasma duplicando eventos.</p></div>
       <div class="card" style="--c:#8661c5"><div class="icon-chip soft">🏢</div><h3>Pensado para clústeres corporativos</h3><p>Modo restringido para perfiles mínimos (solo pods + port-forward), alta vía grupo de Entra ID y fallback automático al manager ante un 403.</p></div>
       <div class="card" style="--c:#038387"><div class="icon-chip soft">🛟</div><h3>Autocuración</h3><p>Snapshot del estado original, restauración exacta al desconectar y watchdog que levanta el clúster si tu máquina desaparece sin despedirse.</p></div>
@@ -477,7 +487,7 @@ orders          ClusterIP  interceptable</span>
   <div class="container">
     <div class="section-head">
       <span class="tag flame">Descarga</span>
-      <h2>kubedebugger v0.2.0</h2>
+      <h2>kubedebugger v0.4.0</h2>
       <p>Un binario para tu máquina, imágenes para tu clúster y, si quieres, la extensión de VS Code.</p>
     </div>
 
@@ -550,27 +560,28 @@ orders          ClusterIP  interceptable</span>
     <div class="grid c2">
       <div class="card" style="--c:#107c10">
         <div class="icon-chip">✅</div>
-        <h3>Validado (v0.2.0)</h3>
+        <h3>Validado (v0.4.0)</h3>
         <p>
-          253 tests de Go y 45 de la extensión en verde, y validación end-to-end de 13
-          pasos contra clúster kind real ejecutada en DOS plataformas (Windows y Ubuntu):
-          intercept forward y mock, restauración exacta, watchdog, allowlist,
-          <code>kdb doctor --fix</code>, dos desarrolladores sobre el mismo servicio por
-          cabecera y modo restringido. La operación contra un clúster remoto desde otra
-          máquina (install, intercept, detach) se probó por el API server a través de un
-          túnel SSH. Túnel TLS con certificado persistido y verificado por fake y demonio.
+          276 tests de Go y 53 de la extensión en verde, y validación end-to-end de 14
+          pasos contra clúster kind real: intercept forward y mock, restauración exacta,
+          watchdog, allowlist, <code>kdb doctor --fix</code>, dos desarrolladores sobre el
+          mismo servicio por cabecera, modo restringido y fallback al origen con endpoints
+          híbridos y edición en caliente. La base de 13 pasos se ejecutó en DOS plataformas
+          (Windows y Ubuntu); el paso nuevo del fallback, en Ubuntu y en CI. La operación
+          contra un clúster remoto desde otra máquina (install, intercept, detach) se probó
+          por el API server a través de un túnel SSH. Túnel TLS con certificado persistido y
+          verificado por fake y demonio.
         </p>
       </div>
       <div class="card" style="--c:#f25022">
         <div class="icon-chip">🛠️</div>
-        <h3>En camino (v0.3+)</h3>
+        <h3>En camino (v0.5+)</h3>
         <p>
-          El TLS del túnel, el filtrado por cabecera, StatefulSet, la salida local→clúster
-          (<code>dial</code>/<code>proxy</code>/<code>dns</code>) y el diagnóstico
-          <code>kdb doctor</code> ya están en v0.2. Queda para v0.3 (ninguna de estas
+          El dashboard de la extensión (v0.3) y el fallback al origen con endpoints
+          editables en caliente (v0.4) ya están. Queda por delante (ninguna de estas
           líneas está desarrollada en la versión actual): enrutar subredes a nivel L3
-          (interfaz TUN/wintun, tipo Telepresence), alta disponibilidad del manager,
-          métricas y tests de los caminos de error del handshake TLS.
+          (interfaz TUN/wintun, tipo Telepresence), alta disponibilidad del manager
+          y métricas.
         </p>
       </div>
     </div>
