@@ -44,7 +44,7 @@
   <div class="container">
     <div class="hero-grid">
       <div>
-        <span class="kicker"><span class="dot"></span> v1.0.0 · 100% gratuito · uso personal y comercial</span>
+        <span class="kicker"><span class="dot"></span> v1.2.0 · 100% gratuito · uso personal y comercial</span>
         <h1>Depura tus microservicios de <em>Kubernetes</em> en tu propia máquina</h1>
         <p class="lead">
           kubedebugger intercepta el <b>tráfico real</b> de un servicio del clúster, escala
@@ -493,7 +493,7 @@ orders          ClusterIP  interceptable</span>
   <div class="container">
     <div class="section-head">
       <span class="tag flame">Descarga</span>
-      <h2>kubedebugger v1.0.0</h2>
+      <h2>kubedebugger v1.2.0</h2>
       <p>Un binario para tu máquina, imágenes para tu clúster y, si quieres, la extensión de VS Code.</p>
     </div>
 
@@ -568,19 +568,20 @@ orders          ClusterIP  interceptable</span>
     <div class="grid c2">
       <div class="card" style="--c:#107c10">
         <div class="icon-chip">✅</div>
-        <h3>Validado (v1.0.0)</h3>
+        <h3>Validado (v1.2.0)</h3>
         <p>
-          307 tests de Go y 53 de la extensión en verde (con detector de carreras en los
+          326 tests de Go y 69 de la extensión en verde (con detector de carreras en los
           paquetes concurrentes), y validación end-to-end de 14 pasos contra clúster kind
           real: intercept forward y mock, restauración exacta, watchdog, allowlist,
           <code>kdb doctor --fix</code>, dos desarrolladores sobre el mismo servicio por
           cabecera, modo restringido y fallback al origen con endpoints híbridos y edición
-          en caliente. La base de 13 pasos se ejecutó en DOS plataformas (Windows y
-          Ubuntu); los pasos nuevos, en Ubuntu y en CI. La operación contra un clúster
-          remoto desde otra máquina (install, intercept, detach) se probó por el API
-          server a través de un túnel SSH. Túnel TLS con certificado persistido y
-          verificado por fake y demonio, y desde 1.0 el fake se autentica con un token
-          propio de su servicio: el token maestro no sale del manager.
+          en caliente. La operación contra un clúster remoto desde otra máquina (install,
+          intercept, detach) se probó por el API server a través de un túnel SSH. Túnel
+          TLS con certificado persistido y verificado por fake y demonio, y desde 1.0 el
+          fake se autentica con un token propio de su servicio: el token maestro no sale
+          del manager. Desde 1.2, la imagen del fake la fija el manager al instalar (nadie
+          la pisa por accidente desde un portátil) y CLI y extensión avisan de versiones
+          nuevas con una consulta diaria anónima, desactivable.
         </p>
       </div>
       <div class="card" style="--c:#f25022">
@@ -634,7 +635,8 @@ orders          ClusterIP  interceptable</span>
     </details>
     <details class="faq">
       <summary>¿Qué datos salen de mi máquina o del clúster?</summary>
-      <div class="a"><p>Ninguno hacia nosotros. El tráfico interceptado viaja del clúster a tu máquina por el túnel; no hay servidor intermedio de kubedebugger, no hay cuentas, y la herramienta no envía métricas ni telemetría. Las herramientas de terceros que ya usas (kubectl, tu clúster, tu registro de imágenes) siguen siendo cosa tuya.</p></div>
+      <div class="a"><p>Ninguno hacia nosotros. El tráfico interceptado viaja del clúster a tu máquina por el túnel; no hay servidor intermedio de kubedebugger, no hay cuentas, y la herramienta no envía métricas ni telemetría. Las herramientas de terceros que ya usas (kubectl, tu clúster, tu registro de imágenes) siguen siendo cosa tuya.</p>
+      <p>Lo único que toca internet fuera de tu clúster es la comprobación de versión nueva: como mucho una vez al día, el CLI y la extensión descargan un pequeño fichero público (<code>latest.json</code>) para avisarte si hay una versión más reciente. Es una descarga anónima: no envía tu versión, tu sistema, tu clúster ni ningún otro dato. Puedes desactivarla con <code>KUBEDEBUGGER_NO_VERSION_CHECK=1</code>.</p></div>
     </details>
     <details class="faq">
       <summary>¿Sirve para clústeres locales (kind, minikube, Docker Desktop)?</summary>

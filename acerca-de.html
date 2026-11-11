@@ -63,7 +63,7 @@
     <h2>Principios del proyecto</h2>
     <ul>
       <li><b>Gratuito de verdad.</b> Todas las funciones para todo el mundo. Sin planes, sin cuentas, sin «versión pro».</li>
-      <li><b>Cero telemetría.</b> La herramienta no envía datos a nadie. Lo que ocurre en tu clúster se queda entre tu clúster y tu máquina.</li>
+      <li><b>Cero telemetría.</b> La herramienta no envía datos a nadie. Lo que ocurre en tu clúster se queda entre tu clúster y tu máquina. La única conexión externa es la comprobación de versión nueva: como mucho una vez al día, el CLI y la extensión descargan un pequeño fichero público (<code>latest.json</code>) — una descarga anónima que no lleva ningún dato tuyo, desactivable con <code>KUBEDEBUGGER_NO_VERSION_CHECK=1</code>.</li>
       <li><b>Honestidad técnica.</b> Documentamos exactamente qué permisos se usan, qué toca cada componente en el clúster y qué queda por hacer. El que administra entiende lo que instala.</li>
       <li><b>Respeto al clúster.</b> Snapshot antes de tocar, restauración automática, watchdog contra sesiones huérfanas y mecanismos para blindar namespaces. Un entorno compartido no es el desorden de nadie.</li>
       <li><b>Tu flujo no cambia.</b> Tu IDE, tu terminal, tu kubeconfig. kubedebugger se integra; no te pide que trabajes a su manera.</li>

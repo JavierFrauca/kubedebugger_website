@@ -89,6 +89,16 @@
       software kubedebugger, por diseño, no envía datos del usuario ni del clúster a
       servidor alguno del proyecto.
     </p>
+    <p>
+      La única comunicación externa del software es la comprobación de versión nueva:
+      como mucho una vez al día, el CLI y la extensión descargan un fichero público
+      (<code>latest.json</code>) alojado en GitHub Pages para avisar si existe una versión
+      más reciente. La petición no incluye ningún dato del usuario (versión local,
+      sistema, clúster o cualquier otro) y puede desactivarse con la variable de entorno
+      <code>KUBEDEBUGGER_NO_VERSION_CHECK=1</code>. Durante la depuración, el tráfico del
+      servicio interceptado viaja cifrado por el túnel hasta la máquina del desarrollador;
+      no pasa por servidor alguno del proyecto.
+    </p>
 
     <h2>5. Tus derechos</h2>
     <p>
