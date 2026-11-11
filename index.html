@@ -405,6 +405,12 @@ orders          ClusterIP  interceptable</span>
           namespace. ¿Un namespace delicado? <code>kubectl label ns &lt;ns&gt;
           kubedebugger.es/allow-intercept=false</code> y queda blindado.
         </p>
+        <p>
+          Las imágenes también se administran aquí: <code>kdb install</code> fija la del
+          fake-proxy (derivada de la del manager, mismo registro y versión), y el manager
+          la aplica en cada intercept. Nadie más toca esa pieza: un binario desactualizado
+          en un portátil no puede despistar la versión que corre todo el equipo.
+        </p>
       </div>
 
       <div class="tab-pane">
@@ -542,9 +548,11 @@ orders          ClusterIP  interceptable</span>
     </div>
     <div class="warn">
       <b>Importante para el clúster:</b> las imágenes del manager y del fake-proxy deben
-      publicarse en un registro accesible desde tu clúster (en AKS, tu ACR). El paquete
-      documenta el paso a paso; con <code>KUBEDEBUGGER_MANAGER_IMAGE</code> y
-      <code>KUBEDEBUGGER_FAKE_IMAGE</code> apuntas a tu registro y no repites flags.
+      publicarse en un registro accesible desde tu clúster (en AKS, tu ACR). Al instalar,
+      <code>kdb install</code> fija la referencia: la imagen del fake se deriva de la del
+      manager (mismo registro y versión) y el manager la aplica en cada intercept — los
+      desarrolladores no configuran nada y ningún binario desactualizado despista la
+      versión que corre el equipo.
     </div>
   </div>
 </section>
